@@ -1,0 +1,14 @@
+
+.modal-dialog{
+    width: fit-content;
+}
+body{
+    background-image: url("tree.jpg");
+    background-color: #cccccc;
+  }
+
+  html{
+	background: url("tree.jpg") no-repeat center center;
+	background-size: cover;
+	background-color: #000000;
+}

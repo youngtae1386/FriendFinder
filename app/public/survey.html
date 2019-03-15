@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FriendFinder</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="../css/style.css" />
+</head>
+
+<body>
+    
+  <div class="container">
+      <div><a href="/api/friends">API</a></div>
+    <div class="jumbotron">
+      <div class="bestFriend">
+        <h1>Find your Best Friend!</h1>
+      </div>
+      <hr />
+      <h2 class="bestFriend">
+        Then find the one with the greatest compatibility!
+      </h2>
+    </div>
+
+    <h2 id = 'surveryHead'>Survey Questions</h2>
+    <hr />
+    <h3><strong>About You</strong></h3>
+    <h4>Name (Required)</h4>
+    <input type="text" name="" id="name" class="form-control" required />
+    <h4>Link to photo (Required)</h4>
+    <input type="text" name="" id="photo" class="form-control" required />
+    <hr />
+
+    <h3><strong>Question 1</strong></h3>
+    <h4>I like to take risks and challenges excite you.</h4>
+    <select data-placeholder="" class="chosen-select" id="q1"></select>
+
+    <h3><strong>Question 2</strong></h3>
+    <h4>Do I consider myself a creative person</h4>
+    <select data-placeholder="" class="chosen-select" id="q2"></select>
+
+    <h3><strong>Question 3</strong></h3>
+    <h4>Money is important to me</h4>
+    <select data-placeholder="" class="chosen-select" id="q3"></select>
+
+    <h3><strong>Question 4</strong></h3>
+    <h4>I like animals</h4>
+    <select data-placeholder="" class="chosen-select" id="q4"></select>
+
+    <h3><strong>Question 5</strong></h3>
+    <h4>I like to go Camping</h4>
+    <select data-placeholder="" class="chosen-select" id="q5"></select>
+
+    <h3><strong>Question 6</strong></h3>
+    <h4>How often do you follow through on what you say you will do?</h4>
+    <select data-placeholder="" class="chosen-select" id="q6"></select>
+
+    <h3><strong>Question 7</strong></h3>
+    <h4>I want a party buddy</h4>
+    <select data-placeholder="" class="chosen-select" id="q7"></select>
+
+    <h3><strong>Question 8</strong></h3>
+    <h4>I complete my responsibilities before I go have fun</h4>
+    <select data-placeholder="" class="chosen-select" id="q8"></select>
+
+    <h3><strong>Question 9</strong></h3>
+    <h4>I like to travel</h4>
+    <select data-placeholder="" class="chosen-select" id="q9"></select>
+
+    <h3><strong>Question 10</strong></h3>
+    <h4>Being around people who energizes me</h4>
+    <select data-placeholder="" class="chosen-select" id="q10"></select>
+
+
+    <br />
+    <br />
+    <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit">
+      <i class="fa fa-check-circle" aria-hidden="true"></i> Submit
+    </button>
+    <br />
+    <br />
+
+
+  </div>
+  <div id="resultsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            &times;
+          </button>
+          <h2 class="modal-title"><strong>Best Match</strong></h2>
+        </div>
+
+        <div class="modal-body">
+          <h2 id="matchName"></h2>
+          <img id="matchImg" src="https://via.placeholder.com/400x400"
+            alt="Placeholder image in case user pic doesn't show" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    //loads when page loads
+
+
+    $("#submit").on("click", function () {
+      function validateForm() {
+        var valueExist = true;
+        $(".form-control").each(function () {
+          if ($(this).val() === "") valueExist = false;
+        });
+        $(".chosen-select").each(function () {
+          if ($(this).val() === "") valueExist = false;
+        });
+        return valueExist;
+      }
+      if (validateForm() == true) {
+        var userData = {
+          name: $("#name").val(),
+          photo: $("#photo").val(),
+          scores: [
+            $("#q1").val(),
+            $("#q2").val(),
+            $("#q3").val(),
+            $("#q4").val(),
+            $("#q5").val(),
+            $("#q6").val(),
+            $("#q7").val(),
+            $("#q8").val(),
+            $("#q9").val(),
+            $("#q10").val()
+          ]
+        };
+        var currentURL = window.location.origin;
+        $.post(currentURL + "/api/friends", userData, function (data) {
+          $("#matchName").text(data.name);
+          $("#matchImg").attr("src", data.photo);
+          $("#resultsModal").modal("toggle");
+        });
+      } else {
+        alert("Please fill out all fields before submitting!");
+      }
+      return false;
+    });
+
+    // var questions = ['' ,'I like to take risks and challenges excite you',
+    //   'Do I consider myself a creative person',
+    //   'Money is important to me',
+    //   'I like animals',
+    //   'I like to go Camping',
+    //   'How often do you follow through on what you say you will do?',
+    //   'I want a party buddy',
+    //   'I complete my responsibilities before I go have fun',
+    //   'I like to travel',
+    //   'Being around people who energizes me']
+
+    var myOptions = {
+      1: '1',
+      2: '2',
+      3: '3',
+      4: '4',
+      5: '5'
+    };
+    var _select = $('<select>');
+    
+    $.each(myOptions, function (val, text) {
+      var i = 0;
+      _select.append(
+      $('<option>' + i +'</option>').val(val).html(text)
+      );
+      i++ });
+    $('.chosen-select').append(_select.html());
+
+    var i = 0;
+    //var _questNum = $('Question'+i);
+
+  //   $.each(questions, function (val, text) {
+  //     i++
+  //     $('.questions').append('<h3><strong>Question'+ i +'</strong></h3>')
+  //     $('.questions').append("<h4 id = 'questHold"+i+"' >"+questions[i])
+
+  //  });
+
+  </script>
+</body>
+
+</html>
